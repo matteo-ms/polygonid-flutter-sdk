@@ -12,6 +12,7 @@ import 'package:polygonid_flutter_sdk_example/utils/custom_button_style.dart';
 import 'package:polygonid_flutter_sdk_example/utils/custom_colors.dart';
 import 'package:polygonid_flutter_sdk_example/utils/custom_strings.dart';
 import 'package:polygonid_flutter_sdk_example/utils/custom_text_styles.dart';
+import 'package:polygonid_flutter_sdk_example/utils/custom_widgets_keys.dart';
 
 class ClaimsScreen extends StatefulWidget {
   final ClaimsBloc _bloc;
@@ -131,6 +132,7 @@ class _ClaimsScreenState extends State<ClaimsScreen> {
           builder: (BuildContext context, ClaimsState state) {
             bool loading = state is LoadingDataClaimsState;
             return ElevatedButton(
+              key: CustomWidgetsKeys.claimsScreenButtonConnect,
               onPressed: () {
                 if (!loading) {
                   widget._bloc.add(const ClaimsEvent.clickScanQrCode());

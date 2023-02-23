@@ -240,30 +240,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   ///
-  Widget _buildNavigateToNextPageButton() {
-    return Padding(
-      padding: const EdgeInsets.only(right: 16),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: BlocBuilder(
-          bloc: _bloc,
-          builder: (BuildContext context, HomeState state) {
-            bool enabled = (state is! LoadingDataHomeState) &&
-                (state.identifier != null && state.identifier!.isNotEmpty);
-            return ButtonNextAction(
-              key: CustomWidgetsKeys.homeScreenButtonNextAction,
-              enabled: enabled,
-              onPressed: () {
-                Navigator.pushNamed(context, Routes.authPath);
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  ///
   Widget _buildSignMessageSection() {
     return BlocBuilder(
       bloc: _bloc,
@@ -321,6 +297,7 @@ class _HomeScreenState extends State<HomeScreen> {
         bool enabled = (state is! LoadingDataHomeState) &&
             (state.identifier != null && state.identifier!.isNotEmpty);
         return FeatureCard(
+          key: CustomWidgetsKeys.homeScreenFeatureCardAuthenticate,
           methodName: CustomStrings.authenticateMethod,
           title: CustomStrings.authenticateTitle,
           description: CustomStrings.authenticateDescription,

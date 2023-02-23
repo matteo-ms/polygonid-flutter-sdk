@@ -221,5 +221,7 @@ gradle
 rust/target
 .env
 .env.dev
+.env.integrationtest
 dev_env.g.dart
 prod_env.g.dart
+intregrationtest_env.g.dart

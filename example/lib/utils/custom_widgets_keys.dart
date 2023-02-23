@@ -4,11 +4,12 @@ class CustomWidgetsKeys {
   CustomWidgetsKeys._();
 
   /// HOME SCREEN
-  static const Key homeScreenButtonNextAction = Key("homeButtonNextAction");
   static const Key homeScreenButtonCreateIdentity =
       Key("homeButtonCreateIdentity");
   static const Key homeScreenButtonRemoveIdentity =
       Key("homeButtonRemoveIdentity");
+  static const Key homeScreenFeatureCardAuthenticate =
+      Key("homeFeatureCardAuthenticate");
 
   /// AUTH SCREEN
   static const Key authScreenButtonNextAction =
@@ -19,4 +20,8 @@ class CustomWidgetsKeys {
   static const Key signScreenButtonSignMessage =
       Key("signScreenButtonSignMessage");
   static const Key signWidget = Key("signWidget");
+
+  /// CLAIMS SCREEN
+  static const Key claimsScreenButtonConnect =
+      Key("claimsScreenButtonAddClaim");
 }
