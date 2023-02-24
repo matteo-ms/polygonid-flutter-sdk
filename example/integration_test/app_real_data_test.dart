@@ -17,6 +17,9 @@ import 'package:polygonid_flutter_sdk_example/src/presentation/dependency_inject
 import 'package:polygonid_flutter_sdk_example/src/presentation/dependency_injection/dependencies_provider.dart';
 import 'package:polygonid_flutter_sdk_example/src/presentation/navigations/routes.dart';
 import 'package:polygonid_flutter_sdk_example/src/presentation/ui/auth/widgets/auth.dart';
+import 'package:polygonid_flutter_sdk_example/src/presentation/ui/claim_detail/widgets/claim_detail.dart';
+import 'package:polygonid_flutter_sdk_example/src/presentation/ui/claims/models/claim_model.dart';
+import 'package:polygonid_flutter_sdk_example/src/presentation/ui/claims/widgets/claim_card.dart';
 import 'package:polygonid_flutter_sdk_example/src/presentation/ui/claims/widgets/claims.dart';
 import 'package:polygonid_flutter_sdk_example/src/presentation/ui/home/widgets/home.dart';
 import 'package:polygonid_flutter_sdk_example/src/presentation/ui/splash/widgets/splash.dart';
@@ -57,6 +60,19 @@ void main() {
         await testAuthentication(widgetTester: widgetTester, key: key);
         await testClaims(widgetTester: widgetTester, key: key);
 
+        final buttonFinder = find.byType(ClaimCard).first;
+        await widgetTester.tap(buttonFinder);
+        await widgetTester.pumpAndSettle();
+        await widgetTester.pumpAndSettle(const Duration(seconds: 5));
+        key.currentState?.pop();
+        await widgetTester.pumpAndSettle();
+
+        // we go back to authentication page
+        key.currentState?.pop();
+        await widgetTester.pumpAndSettle();
+
+        await testAuthenticationWithVerifierKYCAgeSig(
+            widgetTester: widgetTester, key: key);
 
         //end
         await widgetTester.pumpAndSettle();
@@ -135,6 +151,10 @@ Future<void> _initNavigation({
         Routes.authPath: (BuildContext context) => AuthScreen(),
         Routes.qrCodeScannerPath: (BuildContext context) => Container(),
         Routes.claimsPath: (BuildContext context) => ClaimsScreen(),
+        Routes.claimDetailPath: (BuildContext context) {
+          final args = ModalRoute.of(context)!.settings.arguments as ClaimModel;
+          return ClaimDetailScreen(claimModel: args);
+        },
       },
     ),
   );
@@ -189,6 +209,28 @@ Future<void> testClaims({
   await widgetTester.pumpAndSettle();
 }
 
+/// Test authentication with verifier with existing identity and claims
+Future<void> testAuthenticationWithVerifierKYCAgeSig({
+  required WidgetTester widgetTester,
+  required GlobalKey<NavigatorState> key,
+}) async {
+  Map<String, String> queryParams = {
+    "type": "kycSig",
+  };
+  String iden3Message =
+      await _getAuthenticationIden3MessageFromApi(queryParams: queryParams);
+  await widgetTester.tap(find.byKey(CustomWidgetsKeys.authScreenButtonConnect));
+  await widgetTester.pumpAndSettle();
+  key.currentState?.pop(iden3Message);
+  await widgetTester.pumpAndSettle();
+
+  // with the iden3message scanned
+  // we expect to authenticate succesfully
+  await widgetTester.pumpAndSettle(const Duration(seconds: 3));
+  expect(find.text(CustomStrings.authSuccess), findsOneWidget);
+  await widgetTester.pumpAndSettle();
+}
+
 ///
 Future<void> _initCircuits() async {
   Completer completer = Completer();
@@ -207,9 +249,17 @@ Future<void> _initCircuits() async {
 }
 
 ///
-Future<String> _getAuthenticationIden3MessageFromApi() async {
+Future<String> _getAuthenticationIden3MessageFromApi({
+  Map<String, String>? queryParams,
+}) async {
   Uri uri = Uri.parse(
       "https://self-hosted-demo-backend-platform.polygonid.me/api/sign-in");
+
+  //add query params
+  if (queryParams != null) {
+    uri = uri.replace(queryParameters: queryParams);
+  }
+
   http.Response response = await http.get(
     uri,
     headers: {
