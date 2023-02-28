@@ -30,8 +30,7 @@ import 'package:polygonid_flutter_sdk_example/utils/custom_widgets_keys.dart';
 import 'package:polygonid_flutter_sdk_example/utils/secure_storage_keys.dart';
 import 'package:uuid/uuid.dart';
 
-const String _apiBaseUrl = "https://self-hosted-platform.polygonid.me";
-const String _apiVersion = "v1";
+import 'data/data_sources/remote_data_source.dart';
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +39,7 @@ void main() {
   group('complete flow with live data', () {
     setUpAll(() async {
       await di.init();
+      di.getIt.registerFactory<RemoteDataSource>(() => RemoteDataSource());
     });
 
     setUp(() async {
@@ -96,6 +96,7 @@ Future<void> testAuthentication({
   required WidgetTester widgetTester,
   required GlobalKey<NavigatorState> key,
 }) async {
+  RemoteDataSource remoteDataSource = RemoteDataSource();
   //  then by clicking on the "authentication" feature card,
   //  we expect to navigate to authentication page
   await widgetTester
@@ -106,7 +107,8 @@ Future<void> testAuthentication({
 
   // we simulate the qrCode scanning, we cannot mock it because
   // it change everytime and also it expire
-  String iden3Message = await _getAuthenticationIden3MessageFromApi();
+  String iden3Message =
+      await remoteDataSource.getAuthenticationIden3MessageFromApi();
   await widgetTester.tap(find.byKey(CustomWidgetsKeys.authScreenButtonConnect));
   await widgetTester.pumpAndSettle();
   key.currentState?.pop(iden3Message);
@@ -187,6 +189,8 @@ Future<void> testClaims({
   required WidgetTester widgetTester,
   required GlobalKey<NavigatorState> key,
 }) async {
+  RemoteDataSource remoteDataSource = getIt.get<RemoteDataSource>();
+
   // then, we navigate to the claims list screen
   await widgetTester
       .tap(find.byKey(CustomWidgetsKeys.authScreenButtonNextAction));
@@ -195,8 +199,9 @@ Future<void> testClaims({
   expect(find.text(CustomStrings.claimsListNoResult), findsOneWidget);
 
   // then, we create a claim
-  String claimId = await _getClaimIdFromApi();
-  String claimIden3Message = await _getClaimIden3MessageFromApi(claimId);
+  String claimId = await remoteDataSource.getClaimIdFromApi();
+  String claimIden3Message =
+      await remoteDataSource.getClaimIden3MessageFromApi(claimId);
   await widgetTester
       .tap(find.byKey(CustomWidgetsKeys.claimsScreenButtonConnect));
   await widgetTester.pumpAndSettle();
@@ -214,11 +219,12 @@ Future<void> testAuthenticationWithVerifierKYCAgeSig({
   required WidgetTester widgetTester,
   required GlobalKey<NavigatorState> key,
 }) async {
+  RemoteDataSource remoteDataSource = getIt.get<RemoteDataSource>();
   Map<String, String> queryParams = {
     "type": "kycSig",
   };
   String iden3Message =
-      await _getAuthenticationIden3MessageFromApi(queryParams: queryParams);
+      await remoteDataSource.getAuthenticationIden3MessageFromApi(queryParams: queryParams);
   await widgetTester.tap(find.byKey(CustomWidgetsKeys.authScreenButtonConnect));
   await widgetTester.pumpAndSettle();
   key.currentState?.pop(iden3Message);
@@ -246,94 +252,4 @@ Future<void> _initCircuits() async {
           ));
 
   return completer.future;
-}
-
-///
-Future<String> _getAuthenticationIden3MessageFromApi({
-  Map<String, String>? queryParams,
-}) async {
-  Uri uri = Uri.parse(
-      "https://self-hosted-demo-backend-platform.polygonid.me/api/sign-in");
-
-  //add query params
-  if (queryParams != null) {
-    uri = uri.replace(queryParameters: queryParams);
-  }
-
-  http.Response response = await http.get(
-    uri,
-    headers: {
-      HttpHeaders.acceptHeader: '*/*',
-      HttpHeaders.contentTypeHeader: 'application/json',
-    },
-  );
-  return response.body;
-}
-
-///
-Future<String> _getClaimIdFromApi() async {
-  String username = IntegrationTestEnv.selfHostedPlatformUsername;
-  String password = IntegrationTestEnv.selfHostedPlatformPassword;
-  String issuerDid = IntegrationTestEnv.selfHostedPlatformIssuerDid;
-  String? privateKey =
-      await SecureStorage.read(key: SecureStorageKeys.privateKey);
-  String walletDid = await getIt<PolygonIdSdk>().identity.getDidIdentifier(
-      privateKey: privateKey!,
-      blockchain: BlockchainResources.blockchain,
-      network: BlockchainResources.network);
-
-  Map<String, dynamic> claim = {
-    "credentialSchema":
-        "https://raw.githubusercontent.com/iden3/claim-schema-vocab/main/schemas/json/KYCAgeCredential-v3.json",
-    "type": "KYCAgeCredential",
-    "credentialSubject": {
-      "id": walletDid,
-      "birthday": 19960424,
-      "documentType": 2
-    },
-    "expiration": 12345
-  };
-
-  final String basicAuth =
-      'Basic ' + base64Encode(utf8.encode('$username:$password'));
-
-  Uri uri = Uri.parse("$_apiBaseUrl/$_apiVersion/$issuerDid/claims");
-
-  http.Response response = await http.post(
-    uri,
-    headers: {
-      HttpHeaders.authorizationHeader: basicAuth,
-      HttpHeaders.acceptHeader: '*/*',
-      HttpHeaders.contentTypeHeader: 'application/json',
-    },
-    body: jsonEncode(claim),
-  );
-
-  Map<String, dynamic> responseJson = jsonDecode(response.body);
-  String claimId = responseJson['id'];
-  return claimId;
-}
-
-///
-Future<String> _getClaimIden3MessageFromApi(String claimId) async {
-  String username = IntegrationTestEnv.selfHostedPlatformUsername;
-  String password = IntegrationTestEnv.selfHostedPlatformPassword;
-  String issuerDid = IntegrationTestEnv.selfHostedPlatformIssuerDid;
-
-  final String basicAuth =
-      'Basic ' + base64Encode(utf8.encode('$username:$password'));
-
-  Uri uri =
-      Uri.parse("$_apiBaseUrl/$_apiVersion/$issuerDid/claims/$claimId/qrcode");
-
-  http.Response response = await http.get(
-    uri,
-    headers: {
-      HttpHeaders.authorizationHeader: basicAuth,
-      HttpHeaders.acceptHeader: '*/*',
-      HttpHeaders.contentTypeHeader: 'application/json',
-    },
-  );
-
-  return response.body;
 }
