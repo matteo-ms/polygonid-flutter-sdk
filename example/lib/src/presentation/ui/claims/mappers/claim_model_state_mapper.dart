@@ -8,8 +8,6 @@ class ClaimModelStateMapper implements Mapper<ClaimState, ClaimModelState> {
     switch (from) {
       case ClaimState.expired:
         return ClaimModelState.expired;
-      case ClaimState.pending:
-        return ClaimModelState.pending;
       case ClaimState.revoked:
         return ClaimModelState.revoked;
       default:
@@ -22,8 +20,6 @@ class ClaimModelStateMapper implements Mapper<ClaimState, ClaimModelState> {
     switch (to) {
       case ClaimModelState.expired:
         return ClaimState.expired;
-      case ClaimModelState.pending:
-        return ClaimState.pending;
       case ClaimModelState.revoked:
         return ClaimState.revoked;
       default:

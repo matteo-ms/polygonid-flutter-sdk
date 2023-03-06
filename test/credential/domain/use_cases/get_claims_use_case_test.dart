@@ -39,16 +39,8 @@ final claimEntities = [
       expiration: "",
       info: {},
       type: "",
-      state: ClaimState.pending,
-      id: "id2"),
-  ClaimEntity(
-      issuer: "",
-      did: "",
-      expiration: "",
-      info: {},
-      type: "",
       state: ClaimState.revoked,
-      id: "id3")
+      id: "id2")
 ];
 var exception = Exception();
 

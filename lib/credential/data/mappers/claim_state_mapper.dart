@@ -8,8 +8,6 @@ class ClaimStateMapper extends Mapper<String, ClaimState> {
     switch (from) {
       case "expired":
         return ClaimState.expired;
-      case "pending":
-        return ClaimState.pending;
       case "revoked":
         return ClaimState.revoked;
       default:
@@ -22,8 +20,6 @@ class ClaimStateMapper extends Mapper<String, ClaimState> {
     switch (to) {
       case ClaimState.expired:
         return "expired";
-      case ClaimState.pending:
-        return "pending";
       case ClaimState.revoked:
         return "revoked";
       default:

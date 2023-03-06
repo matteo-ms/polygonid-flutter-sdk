@@ -3,10 +3,9 @@ import 'package:polygonid_flutter_sdk/credential/data/mappers/claim_state_mapper
 import 'package:polygonid_flutter_sdk/credential/domain/entities/claim_entity.dart';
 
 // Data
-const states = ["expired", "pending", "revoked", ""];
+const states = ["expired", "revoked", ""];
 const stateEnums = [
   ClaimState.expired,
-  ClaimState.pending,
   ClaimState.revoked,
   ClaimState.active
 ];

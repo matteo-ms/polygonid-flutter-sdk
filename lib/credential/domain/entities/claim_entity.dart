@@ -1,4 +1,4 @@
-enum ClaimState { active, expired, pending, revoked }
+enum ClaimState { active, expired, revoked }
 
 class ClaimEntity {
   final String id;
