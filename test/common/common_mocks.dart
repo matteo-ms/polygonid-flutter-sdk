@@ -33,6 +33,7 @@ class CommonMocks {
   static int operator = 4;
   static String config = "theConfig";
   static int nonce = 1;
+  static int maxLevels = 40;
   static Map<String, dynamic> aMap = {
     'the': {'very': 'nice map'},
     'yep': 4

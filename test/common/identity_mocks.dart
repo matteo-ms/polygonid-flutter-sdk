@@ -44,4 +44,6 @@ class IdentityMocks {
 
   static TreeStateEntity treeState =
       TreeStateEntity(CommonMocks.hash, hash, hash, hash);
+
+  static List<String> identityAuthClaim = ["0", "0"];
 }
