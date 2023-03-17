@@ -26,6 +26,7 @@ class CommonMocks {
   static String token = "theToken";
   static String url = "theUrl";
   static String circuitId = "credentialAtomicQuerySig";
+  static String circuitIdOnChainSig = "credentialAtomicQuerySig";
   static String field = "theField";
   static String issuer = "theIssuer";
   static String type = "theType";

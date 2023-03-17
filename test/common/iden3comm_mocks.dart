@@ -36,7 +36,7 @@ class Iden3commMocks {
   static String otherProofScopeRequestJson = '''
     {
       "id": 1,
-      "circuitId": "${CommonMocks.circuitId}",
+      "circuitId": "${CommonMocks.circuitIdOnChainSig}",
       "optional": false,
       "query": {
         "allowedIssuers": [

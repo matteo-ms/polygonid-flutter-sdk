@@ -32,6 +32,7 @@ void main() {
   setUp(() {
     reset(identityRepository);
     reset(getDidUseCase);
+    reset(getDidIdentifierUseCase);
 
     // Given
     when(identityRepository.getIdentity(genesisDid: CommonMocks.did))
