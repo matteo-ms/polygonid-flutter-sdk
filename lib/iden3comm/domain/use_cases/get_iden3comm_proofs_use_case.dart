@@ -9,6 +9,7 @@ import 'package:polygonid_flutter_sdk/iden3comm/domain/repositories/iden3comm_re
 import 'package:polygonid_flutter_sdk/identity/domain/entities/did_entity.dart';
 import 'package:polygonid_flutter_sdk/identity/domain/use_cases/get_did_use_case.dart';
 import 'package:polygonid_flutter_sdk/identity/domain/use_cases/identity/get_identity_use_case.dart';
+import 'package:polygonid_flutter_sdk/proof/domain/entities/rhs_data_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/use_cases/is_proof_circuit_supported_use_case.dart';
 import 'package:polygonid_flutter_sdk/proof/infrastructure/proof_generation_stream_manager.dart';
 
@@ -29,13 +30,15 @@ class GetIden3commProofsParam {
   final BigInt profileNonce;
   final String privateKey;
   final String? challenge;
+  final RhsDataEntity? rhsData;
 
   GetIden3commProofsParam(
       {required this.message,
       required this.genesisDid,
       required this.profileNonce,
       required this.privateKey,
-      this.challenge});
+      this.challenge,
+      this.rhsData});
 }
 
 class GetIden3commProofsUseCase
@@ -113,6 +116,7 @@ class GetIden3commProofsUseCase
                   credential,
                   request.scope,
                   circuitData,
+                  param.rhsData,
                   privKey,
                   challenge)));
         }).catchError((error) {

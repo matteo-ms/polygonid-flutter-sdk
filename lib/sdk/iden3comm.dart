@@ -20,6 +20,7 @@ import 'package:polygonid_flutter_sdk/iden3comm/domain/use_cases/interaction/add
 import 'package:polygonid_flutter_sdk/iden3comm/domain/use_cases/interaction/get_interactions_use_case.dart';
 import 'package:polygonid_flutter_sdk/iden3comm/domain/use_cases/interaction/remove_interactions_use_case.dart';
 import 'package:polygonid_flutter_sdk/iden3comm/domain/use_cases/interaction/update_interaction_use_case.dart';
+import 'package:polygonid_flutter_sdk/proof/domain/entities/rhs_data_entity.dart';
 
 import '../iden3comm/domain/use_cases/get_schemas_use_case.dart';
 
@@ -121,6 +122,7 @@ abstract class PolygonIdSdkIden3comm {
     BigInt? profileNonce,
     required String privateKey,
     String? pushToken,
+    RhsDataEntity? rhsData,
   });
 
   /// Gets a list of [InteractionEntity] associated to the identity previously stored
@@ -290,7 +292,8 @@ class Iden3comm implements PolygonIdSdkIden3comm {
       required String genesisDid,
       BigInt? profileNonce,
       required String privateKey,
-      String? pushToken}) {
+      String? pushToken,
+      RhsDataEntity? rhsData}) {
     if (message is! AuthIden3MessageEntity) {
       throw InvalidIden3MsgTypeException(
           Iden3MessageType.auth, message.messageType);
@@ -303,6 +306,7 @@ class Iden3comm implements PolygonIdSdkIden3comm {
       profileNonce: profileNonce ?? GENESIS_PROFILE_NONCE,
       privateKey: privateKey,
       pushToken: pushToken,
+      rhsData: rhsData,
     ));
   }
 

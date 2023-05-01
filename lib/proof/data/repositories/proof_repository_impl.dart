@@ -19,11 +19,14 @@ import 'package:polygonid_flutter_sdk/identity/data/dtos/hash_dto.dart';
 import 'package:polygonid_flutter_sdk/identity/domain/entities/tree_state_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/data/data_sources/circuits_download_data_source.dart';
 import 'package:polygonid_flutter_sdk/proof/data/dtos/node_aux_dto.dart';
+import 'package:polygonid_flutter_sdk/proof/data/dtos/rhs_atomic_query_inputs_param.dart';
 import 'package:polygonid_flutter_sdk/proof/data/mappers/jwz_proof_mapper.dart';
+import 'package:polygonid_flutter_sdk/proof/data/mappers/rhs_data_mapper.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/entities/download_info_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/entities/gist_proof_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/entities/jwz/jwz.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/entities/jwz/jwz_proof.dart';
+import 'package:polygonid_flutter_sdk/proof/domain/entities/rhs_data_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/exceptions/proof_generation_exceptions.dart';
 
 import '../../../common/utils/uint8_list_utils.dart';
@@ -61,6 +64,7 @@ class ProofRepositoryImpl extends ProofRepository {
   final AuthProofMapper _authProofMapper;
   final GistProofMapper _gistProofMapper;
   final iden3GistProofMapper.GistProofMapper _iden3GistProofMapper;
+  final RhsDataMapper _rhsDataMapper;
 
   // FIXME: those mappers shouldn't be used here as they are part of Credential
   final ClaimMapper _claimMapper;
@@ -84,6 +88,7 @@ class ProofRepositoryImpl extends ProofRepository {
     this._authProofMapper,
     this._gistProofMapper,
     this._iden3GistProofMapper,
+    this._rhsDataMapper,
   );
 
   @override
@@ -108,7 +113,8 @@ class ProofRepositoryImpl extends ProofRepository {
       List<String>? authClaim,
       Map<String, dynamic>? treeState,
       String? challenge,
-      String? signature}) async {
+      String? signature,
+      RhsDataEntity? rhs}) async {
     ClaimDTO credentialDto = _claimMapper.mapTo(claim);
     Map<String, dynamic>? gistProofMap;
     if (gistProof != null) {
@@ -122,6 +128,11 @@ class ProofRepositoryImpl extends ProofRepository {
     Map<String, dynamic>? nonRevProofMap;
     if (nonRevProof != null) {
       nonRevProofMap = _authProofMapper.mapTo(nonRevProof);
+    }
+
+    Map<String, dynamic>? rhsMap;
+    if (rhs != null) {
+      rhsMap = _rhsDataMapper.mapTo(rhs);
     }
 
     String? res = await _libPolygonIdCoreProofDataSource
@@ -138,21 +149,16 @@ class ProofRepositoryImpl extends ProofRepository {
           signature: signature,
           credential: credentialDto.info,
           request: request,
+          rhsParam: rhsMap,
         )
         .catchError((error) => throw NullAtomicQueryInputsException(id));
 
     if (res != null && res.isNotEmpty) {
-      Uint8List inputsJsonBytes;
       dynamic inputsJson = json.decode(res);
       if (inputsJson is Map<String, dynamic>) {
-        //Map<String, dynamic> inputs = json.decode(res);
-        Uint8List inputsJsonBytes = Uint8ArrayUtils.uint8ListfromString(
-            res /*json.encode(inputs["inputs"])*/);
-        return inputsJsonBytes;
+        return Uint8ArrayUtils.uint8ListfromString(res);
       } else if (inputsJson is String) {
-        Uint8List inputsJsonBytes =
-            Uint8ArrayUtils.uint8ListfromString(inputsJson);
-        return inputsJsonBytes;
+        return Uint8ArrayUtils.uint8ListfromString(inputsJson);
       }
     }
 

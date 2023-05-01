@@ -5,6 +5,7 @@ import 'package:polygonid_flutter_sdk/credential/domain/entities/claim_entity.da
 import 'package:polygonid_flutter_sdk/iden3comm/domain/entities/proof_request_entity.dart';
 import 'package:polygonid_flutter_sdk/iden3comm/domain/entities/request/auth/proof_scope_request.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/entities/download_info_entity.dart';
+import 'package:polygonid_flutter_sdk/proof/domain/entities/rhs_data_entity.dart';
 
 import '../entities/circuit_data_entity.dart';
 import '../entities/gist_proof_entity.dart';
@@ -17,19 +18,21 @@ abstract class ProofRepository {
 
   Future<CircuitDataEntity> loadCircuitFiles(String circuitId);
 
-  Future<Uint8List> calculateAtomicQueryInputs(
-      {required String id,
-      required BigInt profileNonce,
-      required BigInt claimSubjectProfileNonce,
-      required ClaimEntity claim,
-      required ProofScopeRequest request,
-      ProofEntity? incProof,
-      ProofEntity? nonRevProof,
-      GistProofEntity? gistProof,
-      List<String>? authClaim,
-      Map<String, dynamic>? treeState,
-      String? challenge,
-      String? signature});
+  Future<Uint8List> calculateAtomicQueryInputs({
+    required String id,
+    required BigInt profileNonce,
+    required BigInt claimSubjectProfileNonce,
+    required ClaimEntity claim,
+    required ProofScopeRequest request,
+    ProofEntity? incProof,
+    ProofEntity? nonRevProof,
+    GistProofEntity? gistProof,
+    List<String>? authClaim,
+    Map<String, dynamic>? treeState,
+    String? challenge,
+    String? signature,
+    RhsDataEntity? rhs,
+  });
 
   Future<Uint8List> calculateWitness(
     CircuitDataEntity circuitData,

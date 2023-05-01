@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import 'package:polygonid_flutter_sdk/credential/domain/entities/claim_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/entities/download_info_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/entities/jwz/jwz_proof.dart';
+import 'package:polygonid_flutter_sdk/proof/domain/entities/rhs_data_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/use_cases/circuits_files_exist_use_case.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/use_cases/download_circuits_use_case.dart';
 import 'package:polygonid_flutter_sdk/proof/domain/use_cases/generate_proof_use_case.dart';
@@ -26,6 +27,7 @@ abstract class PolygonIdSdkProof {
       required ClaimEntity claim,
       required CircuitDataEntity circuitData,
       required ProofScopeRequest request,
+      RhsDataEntity? rhsData,
       String? privateKey,
       String? challenge});
 
@@ -58,6 +60,7 @@ class Proof implements PolygonIdSdkProof {
       required ClaimEntity claim,
       required CircuitDataEntity circuitData,
       required ProofScopeRequest request,
+      RhsDataEntity? rhsData,
       String? privateKey,
       String? challenge}) {
     return generateProofUseCase.execute(
@@ -68,6 +71,7 @@ class Proof implements PolygonIdSdkProof {
             claim,
             request,
             circuitData,
+            rhsData,
             privateKey,
             challenge));
   }

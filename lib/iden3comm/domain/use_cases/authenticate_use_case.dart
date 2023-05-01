@@ -13,6 +13,7 @@ import 'package:polygonid_flutter_sdk/iden3comm/domain/use_cases/get_auth_token_
 import 'package:polygonid_flutter_sdk/iden3comm/domain/use_cases/get_iden3comm_proofs_use_case.dart';
 import 'package:polygonid_flutter_sdk/identity/domain/use_cases/get_current_env_did_identifier_use_case.dart';
 import 'package:polygonid_flutter_sdk/identity/domain/use_cases/get_did_identifier_use_case.dart';
+import 'package:polygonid_flutter_sdk/proof/domain/entities/rhs_data_entity.dart';
 import 'package:polygonid_flutter_sdk/proof/infrastructure/proof_generation_stream_manager.dart';
 
 class AuthenticateParam {
@@ -21,13 +22,15 @@ class AuthenticateParam {
   final BigInt profileNonce;
   final String privateKey;
   final String? pushToken;
+  final RhsDataEntity? rhsData;
 
   AuthenticateParam(
       {required this.message,
       required this.genesisDid,
       required this.profileNonce,
       required this.privateKey,
-      this.pushToken});
+      this.pushToken,
+      this.rhsData});
 }
 
 class AuthenticateUseCase extends FutureUseCase<AuthenticateParam, void> {
@@ -79,6 +82,7 @@ class AuthenticateUseCase extends FutureUseCase<AuthenticateParam, void> {
         genesisDid: param.genesisDid,
         profileNonce: param.profileNonce,
         privateKey: param.privateKey,
+        rhsData: param.rhsData,
       ));
 
       String pushUrl = env.pushUrl;

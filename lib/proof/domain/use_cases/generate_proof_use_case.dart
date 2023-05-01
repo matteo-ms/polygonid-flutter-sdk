@@ -10,6 +10,7 @@ import 'package:polygonid_flutter_sdk/identity/domain/repositories/identity_repo
 import 'package:polygonid_flutter_sdk/identity/domain/repositories/smt_repository.dart';
 import 'package:polygonid_flutter_sdk/identity/domain/use_cases/get_did_use_case.dart';
 import 'package:polygonid_flutter_sdk/identity/domain/use_cases/get_latest_state_use_case.dart';
+import 'package:polygonid_flutter_sdk/proof/domain/entities/rhs_data_entity.dart';
 
 import '../../../common/domain/domain_logger.dart';
 import '../../../common/domain/tuples.dart';
@@ -36,6 +37,7 @@ class GenerateProofParam {
   final ClaimEntity credential;
   final ProofScopeRequest request; //FIXME: this is not from proof
   final CircuitDataEntity circuitData;
+  final RhsDataEntity? rhsData;
 
   /// FIXME: remove nullables
   final String? privateKey;
@@ -48,6 +50,7 @@ class GenerateProofParam {
       this.credential,
       this.request,
       this.circuitData,
+      this.rhsData,
       this.privateKey,
       this.challenge);
 }
@@ -135,6 +138,7 @@ class GenerateProofUseCase
       signature: signature,
       claim: param.credential,
       request: param.request,
+      rhs: param.rhsData,
     )
         .catchError((error) {
       logger().e("[GenerateProofUseCase] Error: $error");
