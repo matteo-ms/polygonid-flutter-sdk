@@ -800,6 +800,7 @@ _i1.GetIt $initSDKGetIt(
             await get.getAsync<_i135.GetDidUseCase>(),
             await get.getAsync<_i131.SignMessageUseCase>(),
             get<_i124.GetLatestStateUseCase>(),
+            await get.getAsync<_i108.GetEnvUseCase>(),
           ));
   gh.factoryAsync<_i157.GetAuthInputsUseCase>(
       () async => _i157.GetAuthInputsUseCase(

@@ -27,7 +27,6 @@ abstract class PolygonIdSdkProof {
       required ClaimEntity claim,
       required CircuitDataEntity circuitData,
       required ProofScopeRequest request,
-      RhsDataEntity? rhsData,
       String? privateKey,
       String? challenge});
 
@@ -60,7 +59,6 @@ class Proof implements PolygonIdSdkProof {
       required ClaimEntity claim,
       required CircuitDataEntity circuitData,
       required ProofScopeRequest request,
-      RhsDataEntity? rhsData,
       String? privateKey,
       String? challenge}) {
     return generateProofUseCase.execute(
@@ -71,7 +69,6 @@ class Proof implements PolygonIdSdkProof {
             claim,
             request,
             circuitData,
-            rhsData,
             privateKey,
             challenge));
   }

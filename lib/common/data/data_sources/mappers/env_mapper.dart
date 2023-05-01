@@ -13,6 +13,7 @@ class EnvMapper extends Mapper<Map<String, dynamic>, EnvEntity> {
       web3ApiKey: from['web3ApiKey'],
       idStateContract: from['idStateContract'],
       pushUrl: from['pushUrl'],
+      rhsUrl: from['rhsUrl'],
     );
   }
 
@@ -26,6 +27,7 @@ class EnvMapper extends Mapper<Map<String, dynamic>, EnvEntity> {
       web3ApiKey: to.web3ApiKey,
       idStateContract: to.idStateContract,
       pushUrl: to.pushUrl,
+      rhsUrl: to.rhsUrl,
     ).toJson();
   }
 }

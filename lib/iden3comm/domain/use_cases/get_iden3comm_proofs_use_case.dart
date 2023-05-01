@@ -30,15 +30,13 @@ class GetIden3commProofsParam {
   final BigInt profileNonce;
   final String privateKey;
   final String? challenge;
-  final RhsDataEntity? rhsData;
 
   GetIden3commProofsParam(
       {required this.message,
       required this.genesisDid,
       required this.profileNonce,
       required this.privateKey,
-      this.challenge,
-      this.rhsData});
+      this.challenge});
 }
 
 class GetIden3commProofsUseCase
@@ -116,7 +114,6 @@ class GetIden3commProofsUseCase
                   credential,
                   request.scope,
                   circuitData,
-                  param.rhsData,
                   privKey,
                   challenge)));
         }).catchError((error) {

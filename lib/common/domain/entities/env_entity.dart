@@ -6,6 +6,7 @@ class EnvEntity {
   final String web3ApiKey;
   final String idStateContract;
   final String pushUrl;
+  final String rhsUrl;
 
   EnvEntity({
     required this.blockchain,
@@ -15,11 +16,12 @@ class EnvEntity {
     required this.web3ApiKey,
     required this.idStateContract,
     required this.pushUrl,
+    required this.rhsUrl,
   });
 
   @override
   String toString() =>
-      "[EnvEntity] {blockchain: $blockchain, network: $network, web3Url: $web3Url, web3RdpUrl: $web3RdpUrl, web3ApiKey: $web3ApiKey, idStateContract: $idStateContract, pushUrl: $pushUrl}";
+      "[EnvEntity] {blockchain: $blockchain, network: $network, web3Url: $web3Url, web3RdpUrl: $web3RdpUrl, web3ApiKey: $web3ApiKey, idStateContract: $idStateContract, pushUrl: $pushUrl, rhsUrl: $rhsUrl}";
 
   @override
   bool operator ==(Object other) =>
@@ -31,7 +33,8 @@ class EnvEntity {
           web3RdpUrl == other.web3RdpUrl &&
           web3ApiKey == other.web3ApiKey &&
           idStateContract == other.idStateContract &&
-          pushUrl == other.pushUrl;
+          pushUrl == other.pushUrl &&
+          rhsUrl == other.rhsUrl;
 
   @override
   int get hashCode => runtimeType.hashCode;

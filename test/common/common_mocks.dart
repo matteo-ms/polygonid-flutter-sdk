@@ -29,6 +29,7 @@ class CommonMocks {
   static String typ = "theTyp";
   static String token = "theToken";
   static String url = "theUrl";
+  static String rhsUrl = "theRhsUrl";
   static String circuitId = "credentialAtomicQuerySig";
   static String field = "theField";
   static String issuer = "theIssuer";
@@ -72,5 +73,6 @@ class CommonMocks {
     web3ApiKey: id,
     idStateContract: message,
     pushUrl: url,
+    rhsUrl: rhsUrl,
   );
 }

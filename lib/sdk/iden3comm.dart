@@ -122,7 +122,6 @@ abstract class PolygonIdSdkIden3comm {
     BigInt? profileNonce,
     required String privateKey,
     String? pushToken,
-    RhsDataEntity? rhsData,
   });
 
   /// Gets a list of [InteractionEntity] associated to the identity previously stored
@@ -292,8 +291,7 @@ class Iden3comm implements PolygonIdSdkIden3comm {
       required String genesisDid,
       BigInt? profileNonce,
       required String privateKey,
-      String? pushToken,
-      RhsDataEntity? rhsData}) {
+      String? pushToken}) {
     if (message is! AuthIden3MessageEntity) {
       throw InvalidIden3MsgTypeException(
           Iden3MessageType.auth, message.messageType);
@@ -306,7 +304,6 @@ class Iden3comm implements PolygonIdSdkIden3comm {
       profileNonce: profileNonce ?? GENESIS_PROFILE_NONCE,
       privateKey: privateKey,
       pushToken: pushToken,
-      rhsData: rhsData,
     ));
   }
 

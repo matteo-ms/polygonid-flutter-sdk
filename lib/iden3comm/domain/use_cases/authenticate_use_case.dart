@@ -22,15 +22,13 @@ class AuthenticateParam {
   final BigInt profileNonce;
   final String privateKey;
   final String? pushToken;
-  final RhsDataEntity? rhsData;
 
   AuthenticateParam(
       {required this.message,
       required this.genesisDid,
       required this.profileNonce,
       required this.privateKey,
-      this.pushToken,
-      this.rhsData});
+      this.pushToken});
 }
 
 class AuthenticateUseCase extends FutureUseCase<AuthenticateParam, void> {
@@ -82,7 +80,6 @@ class AuthenticateUseCase extends FutureUseCase<AuthenticateParam, void> {
         genesisDid: param.genesisDid,
         profileNonce: param.profileNonce,
         privateKey: param.privateKey,
-        rhsData: param.rhsData,
       ));
 
       String pushUrl = env.pushUrl;

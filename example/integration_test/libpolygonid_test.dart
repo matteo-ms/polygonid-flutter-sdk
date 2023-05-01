@@ -87,7 +87,7 @@ void main() {
     testWidgets('PolygonIdCoreIdentity get sig proofs inputs',
         (WidgetTester tester) async {
       var result =
-          pidCoreProof.getSigProofInputs(PolygonIdCoreMocks.sigV2InputJson);
+          pidCoreProof.getSigProofInputs(PolygonIdCoreMocks.sigV2InputJson, PolygonIdCoreMocks.rhsInputJson);
       var resultJson = jsonDecode(result) as Map<String, dynamic>;
       resultJson['inputs'].remove('timestamp');
       expect(

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:polygonid_flutter_sdk/common/domain/entities/env_entity.dart';
+import 'package:polygonid_flutter_sdk/common/domain/use_cases/get_env_use_case.dart';
 import 'package:polygonid_flutter_sdk/credential/domain/entities/claim_entity.dart';
 import 'package:polygonid_flutter_sdk/credential/domain/use_cases/get_auth_claim_use_case.dart';
 import 'package:polygonid_flutter_sdk/iden3comm/domain/entities/jwz_sd_proof_entity.dart';
@@ -37,7 +39,6 @@ class GenerateProofParam {
   final ClaimEntity credential;
   final ProofScopeRequest request; //FIXME: this is not from proof
   final CircuitDataEntity circuitData;
-  final RhsDataEntity? rhsData;
 
   /// FIXME: remove nullables
   final String? privateKey;
@@ -50,7 +51,6 @@ class GenerateProofParam {
       this.credential,
       this.request,
       this.circuitData,
-      this.rhsData,
       this.privateKey,
       this.challenge);
 }
@@ -67,6 +67,7 @@ class GenerateProofUseCase
   final GetDidUseCase _getDidUseCase;
   final SignMessageUseCase _signMessageUseCase;
   final GetLatestStateUseCase _getLatestStateUseCase;
+  final GetEnvUseCase _getEnvUseCase;
 
   GenerateProofUseCase(
     this._identityRepository,
@@ -79,6 +80,7 @@ class GenerateProofUseCase
     this._getDidUseCase,
     this._signMessageUseCase,
     this._getLatestStateUseCase,
+    this._getEnvUseCase,
   );
 
   @override
@@ -123,6 +125,19 @@ class GenerateProofUseCase
 
     DidEntity didEntity = await _getDidUseCase.execute(param: param.did);
 
+    EnvEntity env = await _getEnvUseCase.execute();
+
+    RhsDataEntity? rhsData;
+    if (env.web3Url != null &&
+        env.web3ApiKey != null &&
+        env.idStateContract != null &&
+        env.rhsUrl != null) {
+      rhsData = RhsDataEntity(
+          ethereumUrl: env.web3Url + env.web3ApiKey,
+          stateContractAddr: env.idStateContract,
+          reverseHashServiceUrl: env.rhsUrl);
+    }
+
     // Prepare atomic query inputs
     Uint8List res = await _proofRepository
         .calculateAtomicQueryInputs(
@@ -138,7 +153,7 @@ class GenerateProofUseCase
       signature: signature,
       claim: param.credential,
       request: param.request,
-      rhs: param.rhsData,
+      rhs: rhsData,
     )
         .catchError((error) {
       logger().e("[GenerateProofUseCase] Error: $error");
