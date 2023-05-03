@@ -37,4 +37,9 @@ class FilterEntity {
       'value': value,
     };
   }
+
+  @override
+  String toString() {
+    return 'FilterEntity{operator: $operator, name: $name, value: $value}';
+  }
 }
