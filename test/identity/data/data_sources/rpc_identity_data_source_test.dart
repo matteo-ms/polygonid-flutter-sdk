@@ -7,7 +7,6 @@ import 'package:polygonid_flutter_sdk/identity/data/data_sources/rpc_identity_da
 import 'package:web3dart/web3dart.dart';
 
 import '../../../common/fake_capturer.dart';
-import 'rpc_identity_data_source_test.mocks.dart';
 
 // Data
 const id = "4f4f4f";
